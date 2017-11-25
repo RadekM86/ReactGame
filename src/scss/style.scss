@@ -1,0 +1,4 @@
+@import "partials/var";
+@import "partials/functions";
+@import "partials/mixins";
+@import "partials/base"; //base zawsze importować po importowaniu wszystkich zmiennych

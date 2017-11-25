@@ -34,5 +34,13 @@
     "game",
     "checkers",
     "react.js"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RadekM86/ReactGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RadekM86/ReactGame/issues"
+  },
+  "homepage": "https://github.com/RadekM86/ReactGame#readme"
 }

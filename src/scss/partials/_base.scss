@@ -1,0 +1,46 @@
+html{
+  font-size: 12px;
+}
+body{
+  background-color: $off-white;
+  margin: 0;
+}
+*{
+  box-sizing: border-box;
+}
+
+.grid-container {
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
+font-size: 0;
+}
+
+.row{
+  margin: -12px;
+  &::after, &::before{
+    content: "";
+    clear: both;
+    display: table;
+  }
+}
+
+[class*="col-"]{
+  float: left;
+  min-height: 1px;
+  padding: 12px;
+  font-size: 1rem;
+  border: 3px;
+}
+@for $i from 1 through $col-number{
+  .col-#{$i}{
+    width: $col-base * $i;
+  }
+}
+.col-6{
+  background-color: #AF0;
+}
+.col-3{
+  background-color: #AF0;
+  border-radius: 50%;
+}
