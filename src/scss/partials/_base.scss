@@ -4,43 +4,77 @@ html{
 body{
   background-color: $off-white;
   margin: 0;
+
+  @include breakpoint(mobile){
+    background-color: hotpink;
+  }
+  @include breakpoint(tablet){
+    background-color: orange;
+  }
+  @include breakpoint(desktop){
+    background-color:navy;
+  };
+
 }
 *{
   box-sizing: border-box;
 }
 
-.grid-container {
-width: 100%;
-max-width: 1200px;
-margin: 0 auto;
-font-size: 0;
-}
-
-.row{
-  margin: -12px;
-  &::after, &::before{
-    content: "";
-    clear: both;
-    display: table;
-  }
-}
-
-[class*="col-"]{
-  float: left;
-  min-height: 1px;
-  padding: 12px;
-  font-size: 1rem;
-  border: 3px;
-}
-@for $i from 1 through $col-number{
-  .col-#{$i}{
-    width: $col-base * $i;
-  }
-}
-.col-6{
-  background-color: #AF0;
-}
-.col-3{
-  background-color: #AF0;
+.dot{
+  padding: calc(100% * (1/18) - 9px);
+  margin:12px;
+  border: 6px solid;
+  border-color: $secondary-color;
   border-radius: 50%;
+
 }
+.checked{
+  background-color: $secondary-color;
+}
+.wrapper{
+  width: 360px;
+  margin: 0 auto;
+  display: flex;
+  font-size: 0;
+  flex-wrap:wrap;
+ }
+.hover{
+  border-color: #BBB;
+}
+
+
+.slide{
+
+animation: slide 0.6s ease forwards;
+}
+@keyframes slide{
+  0%{
+  transform: translateY(0%);
+  }
+  50%{
+  transform: translateY(10px);
+  
+  }
+  100%{
+  transform: translateY(0%);
+  
+  }
+}
+
+.unslide{
+
+  animation: unslide 0.6s ease forwards;
+}
+@keyframes unslide{
+  0%{
+  transform: translateY(0%);
+  }
+  50%{
+  transform: translateY(-10px);
+  
+  }
+  100%{
+  transform: translateY(0%);  
+  }
+}
+
