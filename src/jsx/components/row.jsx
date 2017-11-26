@@ -1,7 +1,23 @@
 import React from 'react';
 import Dot from './dot.jsx';
+import data from '../data/data.jsx'
 
-let checkedDots=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+let checkedDots=data.checkerboard
+
+let dice = data.diceThreeRight
+
+function diceHandler(array, index, layout){
+  array[index]=(array[index]+layout[4])%2;
+  array[index+1]=(array[index+1]+layout[5])%2;
+  array[index-1]=(array[index-1]+layout[3])%2;
+  array[index+6]=(array[index+6]+layout[7])%2;
+  array[index+7]=(array[index+7]+layout[8])%2;
+  array[index+5]=(array[index+5]+layout[6])%2;
+  array[index-6]=(array[index-6]+layout[1])%2;
+  array[index-7]=(array[index-7]+layout[0])%2;
+  array[index-5]=(array[index-5]+layout[2])%2;
+  return array
+}
 
 export default class Row extends React.Component{
     constructor(props){
@@ -19,15 +35,7 @@ export default class Row extends React.Component{
   handleCheck = (number) => {
       console.log(this.state.checked[number])
       let checkedDotsNew = this.state.checked;
-      checkedDots[number]=(checkedDots[number]+1)%2;
-      checkedDots[number+1]=(checkedDots[number+1]+1)%2;
-      checkedDots[number-1]=(checkedDots[number-1]+1)%2;
-      checkedDots[number+6]=(checkedDots[number+6]+1)%2;
-      checkedDots[number+7]=(checkedDots[number+7]+1)%2;
-      checkedDots[number+5]=(checkedDots[number-5]+1)%2;
-      checkedDots[number-6]=(checkedDots[number-6]+1)%2;
-      checkedDots[number-7]=(checkedDots[number-7]+1)%2;
-      checkedDots[number-5]=(checkedDots[number-5]+1)%2;
+      diceHandler(checkedDotsNew,number,dice)
       this.setState({checked: checkedDotsNew});
   }
     render(){

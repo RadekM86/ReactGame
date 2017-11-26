@@ -9641,15 +9641,15 @@ var Row = function (_React$Component) {
         _this.handleCheck = function (number) {
             console.log(_this.state.checked[number]);
             var checkedDotsNew = _this.state.checked;
-            checkedDots[number] = (checkedDots[number] + 1) % 2;
-            checkedDots[number + 1] = (checkedDots[number + 1] + 1) % 2;
-            checkedDots[number - 1] = (checkedDots[number - 1] + 1) % 2;
-            checkedDots[number + 6] = (checkedDots[number] + 1) % 2;
-            checkedDots[number + 7] = (checkedDots[number + 1] + 1) % 2;
-            checkedDots[number + 5] = (checkedDots[number - 1] + 1) % 2;
-            checkedDots[number - 6] = (checkedDots[number] + 1) % 2;
-            checkedDots[number - 7] = (checkedDots[number + 1] + 1) % 2;
-            checkedDots[number - 5] = (checkedDots[number - 1] + 1) % 2;
+            checkedDotsNew[number] = (checkedDots[number] + 1) % 2;
+            checkedDotsNew[number + 1] = (checkedDots[number + 1] + 1) % 2;
+            checkedDotsNew[number - 1] = (checkedDots[number - 1] + 1) % 2;
+            checkedDotsNew[number + 6] = (checkedDots[number + 6] + 1) % 2;
+            checkedDotsNew[number + 7] = (checkedDots[number + 7] + 1) % 2;
+            checkedDotsNew[number + 5] = (checkedDots[number - 5] + 1) % 2;
+            checkedDotsNew[number - 6] = (checkedDots[number - 6] + 1) % 2;
+            checkedDotsNew[number - 7] = (checkedDots[number - 7] + 1) % 2;
+            checkedDotsNew[number - 5] = (checkedDots[number - 5] + 1) % 2;
             _this.setState({ checked: checkedDotsNew });
         };
 
