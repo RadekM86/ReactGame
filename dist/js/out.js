@@ -9601,7 +9601,7 @@ module.exports = getHostComponentFromComposite;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -9614,6 +9614,10 @@ var _dot = __webpack_require__(83);
 
 var _dot2 = _interopRequireDefault(_dot);
 
+var _data = __webpack_require__(189);
+
+var _data2 = _interopRequireDefault(_data);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9622,63 +9626,123 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var checkedDots = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+var checkedDots = _data2.default.allChecked;
+
+var dice = _data2.default.diceThreeRight;
+
+var rounds = 1;
+
+function diceHandler(array, index, layout) {
+  array[index] = (array[index] + layout[4]) % 2;
+  array[index + 1] = (array[index + 1] + layout[5]) % 2;
+  array[index - 1] = (array[index - 1] + layout[3]) % 2;
+  array[index + 6] = (array[index + 6] + layout[7]) % 2;
+  array[index + 7] = (array[index + 7] + layout[8]) % 2;
+  array[index + 5] = (array[index + 5] + layout[6]) % 2;
+  array[index - 6] = (array[index - 6] + layout[1]) % 2;
+  array[index - 7] = (array[index - 7] + layout[0]) % 2;
+  array[index - 5] = (array[index - 5] + layout[2]) % 2;
+  return array;
+}
+
+function pointsHandler(array, index, layout, player) {
+  var arrayToCheck = [array[index - 7], array[index - 6], array[index - 5], array[index - 1], array[index], array[index + 1], array[index + 5], array[index + 6], array[index + 7]];
+  var diceToCheck = layout;
+  var points = [];
+  console.log("array to check" + arrayToCheck);
+  console.log("layout to check" + layout);
+  if (player !== 1) {
+    for (var i = 0; i < layout.length; i++) {
+      if (layout[i] !== 0) {
+        arrayToCheck[i] == layout[i] ? points.push(1) : points.push(-1);
+      }
+    }
+  } else {
+    for (var _i = 0; _i < layout.length; _i++) {
+      if (layout[_i] !== 0) {
+        arrayToCheck[_i] !== layout[_i] ? points.push(1) : points.push(-1);
+      }
+    }
+  }
+  console.log(points);
+  var result = points.reduce(function (prev, curr) {
+    return prev + curr;
+  });
+  return result;
+}
 
 var Row = function (_React$Component) {
-    _inherits(Row, _React$Component);
+  _inherits(Row, _React$Component);
 
-    function Row(props) {
-        _classCallCheck(this, Row);
+  function Row(props) {
+    _classCallCheck(this, Row);
 
-        var _this = _possibleConstructorReturn(this, (Row.__proto__ || Object.getPrototypeOf(Row)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Row.__proto__ || Object.getPrototypeOf(Row)).call(this, props));
 
-        _this.handleClick = function () {
-            _this.setState({
-                checked: !_this.state.checked
-            });
-        };
+    _this.handleCheck = function (number) {
+      console.log(_this.state.checked[number]);
+      var checkedDotsNew = _this.state.checked;
+      diceHandler(checkedDotsNew, number, dice);
+      if (_this.state.player == 1) {
+        _this.setState({ checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+      } else {
+        _this.setState({ checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+      }
+      rounds++;
+    };
 
-        _this.handleCheck = function (number) {
-            console.log(_this.state.checked[number]);
-            var checkedDotsNew = _this.state.checked;
-            checkedDotsNew[number] = (checkedDots[number] + 1) % 2;
-            checkedDotsNew[number + 1] = (checkedDots[number + 1] + 1) % 2;
-            checkedDotsNew[number - 1] = (checkedDots[number - 1] + 1) % 2;
-            checkedDotsNew[number + 6] = (checkedDots[number + 6] + 1) % 2;
-            checkedDotsNew[number + 7] = (checkedDots[number + 7] + 1) % 2;
-            checkedDotsNew[number + 5] = (checkedDots[number - 5] + 1) % 2;
-            checkedDotsNew[number - 6] = (checkedDots[number - 6] + 1) % 2;
-            checkedDotsNew[number - 7] = (checkedDots[number - 7] + 1) % 2;
-            checkedDotsNew[number - 5] = (checkedDots[number - 5] + 1) % 2;
-            _this.setState({ checked: checkedDotsNew });
-        };
+    _this.state = {
+      checked: checkedDots,
+      counter1: 0,
+      counter2: 0,
+      player: 1
+    };
+    return _this;
+  }
 
-        _this.state = {
-            checked: checkedDots
-        };
+  _createClass(Row, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
-        return _this;
+      console.log(this.state.checked);
+      var checkedLayout = this.state.checked;
+      var round = this.state.player == 0 ? "2" : "1";
+      var dots = checkedLayout.map(function (elem, index) {
+        return _react2.default.createElement(_dot2.default, { key: index, checkedElement: elem, number: index, onCheck: _this2.handleCheck, allChecked: _this2.state.checked });
+      });
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h1',
+          null,
+          'player1 ',
+          this.state.counter1
+        ),
+        _react2.default.createElement(
+          'h1',
+          null,
+          'player2 ',
+          this.state.counter2
+        ),
+        _react2.default.createElement(
+          'h2',
+          null,
+          'player ',
+          round,
+          ' round '
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'wrapper' },
+          dots
+        )
+      );
     }
+  }]);
 
-    _createClass(Row, [{
-        key: 'render',
-        value: function render() {
-            var _this2 = this;
-
-            console.log(this.state.checked);
-            var checkedLayout = this.state.checked;
-            var dots = checkedLayout.map(function (elem, index) {
-                return _react2.default.createElement(_dot2.default, { key: index, checkedElement: elem, number: index, onCheck: _this2.handleCheck, allChecked: _this2.state.checked });
-            });
-            return _react2.default.createElement(
-                'div',
-                { className: 'wrapper' },
-                dots
-            );
-        }
-    }]);
-
-    return Row;
+  return Row;
 }(_react2.default.Component);
 
 exports.default = Row;
@@ -9762,7 +9826,7 @@ exports.default = Dot;
 
 __webpack_require__(85);
 __webpack_require__(86);
-module.exports = __webpack_require__(189);
+module.exports = __webpack_require__(190);
 
 
 /***/ }),
@@ -10283,11 +10347,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(
-            'h1',
-            null,
-            'Hello World!'
-          ),
           _react2.default.createElement(_board2.default, null)
         );
       }
@@ -22831,6 +22890,24 @@ exports.default = Board;
 
 /***/ }),
 /* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  allChecked: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  mountFuji: [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],
+  allUnchecked: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  checkerboard: [1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0],
+  layers: [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+  diceThreeLeft: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+  diceThreeRight: [0, 0, 1, 0, 1, 0, 1, 0, 0],
+  diceOneClick: [0, 0, 0, 0, 1, 0, 0, 0, 0] //drawing mode ;)
+};
+
+/***/ }),
+/* 190 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

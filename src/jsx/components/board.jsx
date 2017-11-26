@@ -1,6 +1,7 @@
 import React from 'react';
 import Row from './row.jsx';
 import Dot from './dot.jsx';
+import Dice from './dice.jsx';
 
 export default class Board extends React.Component{
   constructor(props){
