@@ -2,6 +2,11 @@ import React from 'react';
 import Row from './row.jsx';
 import Dot from './dot.jsx';
 import Dice from './dice.jsx';
+import data from '../data/data.jsx';
+
+
+
+
 
 export default class Board extends React.Component{
   constructor(props){
@@ -15,7 +20,7 @@ export default class Board extends React.Component{
       <Row layout={this.state.layout}>
         {this.props.children}
       </Row>
-  </div>
+      </div>
   }
 }
 

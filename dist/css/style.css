@@ -6,13 +6,13 @@ body {
   margin: 0; }
   @media (min-width: 380px) {
     body {
-      background-color: hotpink; } }
+      background-color: #FAFAFA; } }
   @media (min-width: 600px) {
     body {
-      background-color: orange; } }
+      background-color: #FAFAFA; } }
   @media (min-width: 1200px) {
     body {
-      background-color: navy; } }
+      background-color: #FAFAFA; } }
 
 * {
   box-sizing: border-box; }
@@ -20,12 +20,12 @@ body {
 .dot {
   padding: calc(100% * (1/18) - 9px);
   margin: 12px;
-  border: 6px solid;
-  border-color: #050505;
+  border: 6px solid #FAFAFA;
+  background-color: #FA0;
   border-radius: 50%; }
 
 .checked {
-  background-color: #050505; }
+  background-color: #A0F; }
 
 .wrapper {
   width: 360px;
@@ -58,3 +58,14 @@ body {
     transform: translateY(-10px); }
   100% {
     transform: translateY(0%); } }
+
+.select {
+  background-color: #000;
+  color: #FFF; }
+
+.dice {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border: 5px solid #BBB;
+  border-radius: 15px; }

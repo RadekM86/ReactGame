@@ -2,12 +2,16 @@ import React from 'react';
 import Dot from './dot.jsx';
 import data from '../data/data.jsx';
 import Dice from './dice.jsx';
+import CleanDice from '../data/cleanDice.jsx'
 
-let checkedDots=data.allChecked
-
-let dice = data.diceThreeRight
+let checkedDots=data.mountFuji;
 
 var rounds = 1;
+
+
+let diceArray = [data.dice1,data.dice2,data.dice3,data.dice4,data.dice5,data.dice6,data.dice7,data.dice8,data.dice9,data.dice10,data.dice11,data.dice12,data.dice13,data.dice14,data.dice15,data.dice16,data.dice17,data.dice18,data.dice19,data.dice20,data.dice21,data.dice22,data.dice23,data.dice24]
+
+
 
 function diceHandler(array, index, layout){
   array[index]=(array[index]+layout[4])%2;
@@ -56,37 +60,32 @@ export default class Row extends React.Component{
           counter1: 0,
           counter2: 0,
           player: 1,
-          dice: data.diceThreeRight
-        }
-    }
-    handleSelect = ()=>{
-      this.setState({
-        dice: data.diceThreeLeft
-      })
+          dice: diceArray[Math.floor(Math.random()*24)]  }
     }
     handleCheck = (number) => {
         console.log(this.state.checked[number])
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
-          this.setState({checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[Math.floor(Math.random()*24)], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }else{
-          this.setState({checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[Math.floor(Math.random()*24)],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }
          rounds++
       }
+      
     render(){
         console.log(this.state.checked);
         let checkedLayout = this.state.checked;
         let round = (this.state.player==0)? "2":"1";
         let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}/>})
       return <div>
-        <button onClick={this.handleSelect}>Change direction</button>
         <h3>player1 {this.state.counter1}</h3><h3>player2 {this.state.counter2}</h3>
         <h2>player {round} round </h2>
         <div className="wrapper">
         {dots}       
         </div>
+        <CleanDice dice={this.state.dice} player={this.state.player}/>
       </div>
     }
   }
