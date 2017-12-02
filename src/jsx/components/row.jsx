@@ -60,32 +60,39 @@ export default class Row extends React.Component{
           counter1: 0,
           counter2: 0,
           player: 1,
-          dice: diceArray[Math.floor(Math.random()*24)]  }
+          dice: diceArray[0]  }
     }
     handleCheck = (number) => {
         console.log(this.state.checked[number])
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
-          this.setState({dice: diceArray[Math.floor(Math.random()*24)], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[rounds], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }else{
-          this.setState({dice: diceArray[Math.floor(Math.random()*24)],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[rounds],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }
          rounds++
       }
       
     render(){
+        let winner = (this.state.counter1 > this.state.counter2)? "1" : "2";
         console.log(this.state.checked);
         let checkedLayout = this.state.checked;
         let round = (this.state.player==0)? "2":"1";
         let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}/>})
       return <div>
-        <h3>player1 {this.state.counter1}</h3><h3>player2 {this.state.counter2}</h3>
-        <h2>player {round} round </h2>
+        <center>
+        <h2 className="round">player {round} <span>  </span>   round {rounds} </h2>
+        </center>
         <div className="wrapper">
         {dots}       
         </div>
-        <CleanDice dice={this.state.dice} player={this.state.player}/>
+        <div className="bottom wrapper">
+        <div id="player1">player1 <br/> <span className="span"> {this.state.counter1}</span></div>
+        <CleanDice dice={this.state.dice} player={this.state.player} round={rounds} winner={winner}/>
+        <div id="player2">player2 <br/> <span className="span"> {this.state.counter2}</span></div>
+        
+        </div>
       </div>
     }
   }

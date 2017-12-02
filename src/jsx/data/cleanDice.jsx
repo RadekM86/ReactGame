@@ -14,7 +14,9 @@ export default class SvgComponent extends React.Component{
 		let diceLayout = [];
 		diceLayout = this.props.dice.map((elem)=>{return (elem ==1)?color:"none"})
 		console.log(diceLayout)
-	return <div className="dice" style={{borderColor: color}}>
+		if (this.props.round>=24){
+			return <center><div className="gameOver">Game Over<span> <br/>player {this.props.winner} wins</span></div></center>
+		} return <div className="dice" style={{borderColor: color}}>
 	<center>
 
 <svg version="1.1" id="dice" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"

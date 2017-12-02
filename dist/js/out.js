@@ -9735,9 +9735,9 @@ var Row = function (_React$Component) {
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
       if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[Math.floor(Math.random() * 24)], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[rounds], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
       } else {
-        _this.setState({ dice: diceArray[Math.floor(Math.random() * 24)], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[rounds], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
       }
       rounds++;
     };
@@ -9747,7 +9747,7 @@ var Row = function (_React$Component) {
       counter1: 0,
       counter2: 0,
       player: 1,
-      dice: diceArray[Math.floor(Math.random() * 24)] };
+      dice: diceArray[0] };
     return _this;
   }
 
@@ -9756,6 +9756,7 @@ var Row = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      var winner = this.state.counter1 > this.state.counter2 ? "1" : "2";
       console.log(this.state.checked);
       var checkedLayout = this.state.checked;
       var round = this.state.player == 0 ? "2" : "1";
@@ -9766,30 +9767,60 @@ var Row = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(
-          'h3',
+          'center',
           null,
-          'player1 ',
-          this.state.counter1
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'player2 ',
-          this.state.counter2
-        ),
-        _react2.default.createElement(
-          'h2',
-          null,
-          'player ',
-          round,
-          ' round '
+          _react2.default.createElement(
+            'h2',
+            { className: 'round' },
+            'player ',
+            round,
+            ' ',
+            _react2.default.createElement(
+              'span',
+              null,
+              '  '
+            ),
+            '   round ',
+            rounds,
+            ' '
+          )
         ),
         _react2.default.createElement(
           'div',
           { className: 'wrapper' },
           dots
         ),
-        _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player })
+        _react2.default.createElement(
+          'div',
+          { className: 'bottom wrapper' },
+          _react2.default.createElement(
+            'div',
+            { id: 'player1' },
+            'player1 ',
+            _react2.default.createElement('br', null),
+            ' ',
+            _react2.default.createElement(
+              'span',
+              { className: 'span' },
+              ' ',
+              this.state.counter1
+            )
+          ),
+          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player, round: rounds, winner: winner }),
+          _react2.default.createElement(
+            'div',
+            { id: 'player2' },
+            'player2 ',
+            _react2.default.createElement('br', null),
+            ' ',
+            _react2.default.createElement(
+              'span',
+              { className: 'span' },
+              ' ',
+              this.state.counter2
+            )
+          )
+        )
       );
     }
   }]);
@@ -23049,7 +23080,26 @@ var SvgComponent = function (_React$Component) {
 				return elem == 1 ? color : "none";
 			});
 			console.log(diceLayout);
-			return _react2.default.createElement(
+			if (this.props.round >= 24) {
+				return _react2.default.createElement(
+					'center',
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'gameOver' },
+						'Game Over',
+						_react2.default.createElement(
+							'span',
+							null,
+							' ',
+							_react2.default.createElement('br', null),
+							'player ',
+							this.props.winner,
+							' wins'
+						)
+					)
+				);
+			}return _react2.default.createElement(
 				'div',
 				{ className: 'dice', style: { borderColor: color } },
 				_react2.default.createElement(
