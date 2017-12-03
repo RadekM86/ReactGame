@@ -6488,10 +6488,7 @@ module.exports = {
   allUnchecked: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   checkerboard: [1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0],
   layers: [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-  diceThreeLeft: [1, 0, 0, 0, 1, 0, 0, 0, 1],
-  diceThreeRight: [0, 0, 1, 0, 1, 0, 1, 0, 0],
   diceOneClick: [0, 0, 0, 0, 1, 0, 0, 0, 0],
-  diceFour: [1, 0, 1, 1, 0, 0, 1, 0, 1],
   dice1: [1, 0, 0, 0, 1, 0, 0, 0, 1],
   dice2: [0, 0, 1, 0, 1, 0, 1, 0, 0],
   dice3: [0, 0, 0, 1, 1, 1, 0, 0, 0],
@@ -9669,6 +9666,10 @@ var _cleanDice = __webpack_require__(191);
 
 var _cleanDice2 = _interopRequireDefault(_cleanDice);
 
+var _order = __webpack_require__(192);
+
+var _order2 = _interopRequireDefault(_order);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9692,8 +9693,6 @@ function shuffle(a) {
 }
 
 var diceArray = [_data2.default.dice1, _data2.default.dice2, _data2.default.dice3, _data2.default.dice4, _data2.default.dice5, _data2.default.dice6, _data2.default.dice7, _data2.default.dice8, _data2.default.dice9, _data2.default.dice10, _data2.default.dice11, _data2.default.dice12, _data2.default.dice13, _data2.default.dice14, _data2.default.dice15, _data2.default.dice16, _data2.default.dice17, _data2.default.dice18, _data2.default.dice19, _data2.default.dice20, _data2.default.dice21, _data2.default.dice22, _data2.default.dice23, _data2.default.dice24];
-
-shuffle(diceArray);
 
 function diceHandler(array, index, layout) {
   array[index] = (array[index] + layout[4]) % 2;
@@ -9971,7 +9970,7 @@ exports.default = Dice;
 
 __webpack_require__(87);
 __webpack_require__(88);
-module.exports = __webpack_require__(192);
+module.exports = __webpack_require__(193);
 
 
 /***/ }),
@@ -10477,6 +10476,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 document.addEventListener('DOMContentLoaded', function () {
+  var socket = io.connect("http://localhost:4000");
+
   var App = function (_React$Component) {
     _inherits(App, _React$Component);
 
@@ -23147,6 +23148,19 @@ exports.default = SvgComponent;
 
 /***/ }),
 /* 192 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    1: [24, 1, 3, 7, 9, 13, 17, 16, 12, 11, 6, 21, 10, 5, 8, 14, 20, 18, 2, 22, 15, 4, 19, 23],
+    2: [6, 13, 2, 11, 9, 22, 4, 7, 21, 24, 18, 15, 3, 23, 1, 10, 17, 12, 14, 8, 19, 16, 20, 5],
+    3: [4, 15, 5, 11, 21, 1, 20, 24, 19, 2, 9, 17, 18, 13, 14, 6, 23, 16, 7, 8, 22, 10, 12, 3],
+    4: [16, 1, 20, 11, 15, 5, 4, 22, 2, 13, 8, 17, 9, 24, 6, 14, 18, 7, 10, 19, 3, 21, 23, 12],
+    5: [22, 1, 19, 21, 7, 6, 2, 24, 23, 20, 5, 10, 15, 3, 9, 16, 14, 8, 17, 12, 11, 18, 13, 4],
+    6: [10, 1, 16, 4, 19, 9, 14, 6, 7, 15, 20, 13, 8, 5, 17, 24, 23, 21, 11, 2, 12, 18, 22, 3]
+}
+
+/***/ }),
+/* 193 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

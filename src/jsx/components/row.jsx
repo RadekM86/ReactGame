@@ -2,7 +2,7 @@ import React from 'react';
 import Dot from './dot.jsx';
 import data from '../data/data.jsx';
 import Dice from './dice.jsx';
-import CleanDice from '../data/cleanDice.jsx',
+import CleanDice from '../data/cleanDice.jsx';
 import order from '../data/order.js'
 
 let checkedDots=data.mountFuji;
@@ -84,6 +84,7 @@ export default class Row extends React.Component{
           dice: diceArray[0]  }
     }
     handleCheck = (number) => {
+        this.props.send(number + 'send');
         console.log(this.state.checked[number])
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);

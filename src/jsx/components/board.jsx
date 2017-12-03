@@ -17,7 +17,7 @@ export default class Board extends React.Component{
   }
   render(){
     return <div>
-      <Row layout={this.state.layout}>
+      <Row layout={this.state.layout} send={this.props.send}>
         {this.props.children}
       </Row>
       </div>
