@@ -9681,7 +9681,19 @@ var checkedDots = _data2.default.mountFuji;
 
 var rounds = 1;
 
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+}
+
 var diceArray = [_data2.default.dice1, _data2.default.dice2, _data2.default.dice3, _data2.default.dice4, _data2.default.dice5, _data2.default.dice6, _data2.default.dice7, _data2.default.dice8, _data2.default.dice9, _data2.default.dice10, _data2.default.dice11, _data2.default.dice12, _data2.default.dice13, _data2.default.dice14, _data2.default.dice15, _data2.default.dice16, _data2.default.dice17, _data2.default.dice18, _data2.default.dice19, _data2.default.dice20, _data2.default.dice21, _data2.default.dice22, _data2.default.dice23, _data2.default.dice24];
+
+shuffle(diceArray);
 
 function diceHandler(array, index, layout) {
   array[index] = (array[index] + layout[4]) % 2;
