@@ -2,7 +2,8 @@ import React from 'react';
 import Dot from './dot.jsx';
 import data from '../data/data.jsx';
 import Dice from './dice.jsx';
-import CleanDice from '../data/cleanDice.jsx'
+import CleanDice from '../data/cleanDice.jsx',
+import order from '../data/order.js'
 
 let checkedDots=data.mountFuji;
 
@@ -21,6 +22,8 @@ function shuffle(a) {
 }
 
 let diceArray =  [data.dice1,data.dice2,data.dice3,data.dice4,data.dice5,data.dice6,data.dice7,data.dice8,data.dice9,data.dice10,data.dice11,data.dice12,data.dice13,data.dice14,data.dice15,data.dice16,data.dice17,data.dice18,data.dice19,data.dice20,data.dice21,data.dice22,data.dice23,data.dice24];
+
+
 
 
 
