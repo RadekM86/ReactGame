@@ -3,7 +3,7 @@ import Dot from './dot.jsx';
 import data from '../data/data.jsx';
 import Dice from './dice.jsx';
 import CleanDice from '../data/cleanDice.jsx';
-import order from '../data/order.js'
+import orders from '../data/order.js'
 
 let checkedDots=data.mountFuji;
 
@@ -22,11 +22,6 @@ function shuffle(a) {
 }
 
 let diceArray =  [data.dice1,data.dice2,data.dice3,data.dice4,data.dice5,data.dice6,data.dice7,data.dice8,data.dice9,data.dice10,data.dice11,data.dice12,data.dice13,data.dice14,data.dice15,data.dice16,data.dice17,data.dice18,data.dice19,data.dice20,data.dice21,data.dice22,data.dice23,data.dice24];
-
-
-
-
-
 
 
 
@@ -53,8 +48,6 @@ function pointsHandler(array,index, layout, player){
   ];
   let diceToCheck = layout;
   let points = [];
-  console.log("array to check" + arrayToCheck);
-  console.log("layout to check" + layout)
   if(player!==1){
     for(let i = 0; i<layout.length; i++){
       if (layout[i]!==0){
@@ -68,7 +61,6 @@ function pointsHandler(array,index, layout, player){
       }
     }
   }
-  console.log(points)
   let result = points.reduce((prev,curr)=>{return prev+curr})
   return result
 }
@@ -84,14 +76,14 @@ export default class Row extends React.Component{
           dice: diceArray[0]  }
     }
     handleCheck = (number) => {
-        this.props.send(number + 'send');
+        
         console.log(this.state.checked[number])
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
-          this.setState({dice: diceArray[rounds], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[orders.ord2[rounds]], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }else{
-          this.setState({dice: diceArray[rounds],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[orders.ord2[rounds]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }
          rounds++
       }
@@ -101,7 +93,7 @@ export default class Row extends React.Component{
         console.log(this.state.checked);
         let checkedLayout = this.state.checked;
         let round = (this.state.player==0)? "2":"1";
-        let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}/>})
+        let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked} send={this.props.send} round={rounds} />})
       return <div>
         <center>
         <h2 className="round">player {round} <span>  </span>   round {rounds} </h2>
@@ -113,8 +105,7 @@ export default class Row extends React.Component{
         <div id="player1">player1 <br/> <span className="span"> {this.state.counter1}</span></div>
         <CleanDice dice={this.state.dice} player={this.state.player} round={rounds} winner={winner}/>
         <div id="player2">player2 <br/> <span className="span"> {this.state.counter2}</span></div>
-        
-        </div>
+         </div>
       </div>
     }
   }

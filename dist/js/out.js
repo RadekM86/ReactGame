@@ -9711,8 +9711,6 @@ function pointsHandler(array, index, layout, player) {
   var arrayToCheck = [array[index - 7], array[index - 6], array[index - 5], array[index - 1], array[index], array[index + 1], array[index + 5], array[index + 6], array[index + 7]];
   var diceToCheck = layout;
   var points = [];
-  console.log("array to check" + arrayToCheck);
-  console.log("layout to check" + layout);
   if (player !== 1) {
     for (var i = 0; i < layout.length; i++) {
       if (layout[i] !== 0) {
@@ -9726,7 +9724,6 @@ function pointsHandler(array, index, layout, player) {
       }
     }
   }
-  console.log(points);
   var result = points.reduce(function (prev, curr) {
     return prev + curr;
   });
@@ -9742,13 +9739,14 @@ var Row = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Row.__proto__ || Object.getPrototypeOf(Row)).call(this, props));
 
     _this.handleCheck = function (number) {
+
       console.log(_this.state.checked[number]);
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
       if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[rounds], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[rounds]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
       } else {
-        _this.setState({ dice: diceArray[rounds], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[rounds]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
       }
       rounds++;
     };
@@ -9772,7 +9770,7 @@ var Row = function (_React$Component) {
       var checkedLayout = this.state.checked;
       var round = this.state.player == 0 ? "2" : "1";
       var dots = checkedLayout.map(function (elem, index) {
-        return _react2.default.createElement(_dot2.default, { key: index, checkedElement: elem, number: index, onCheck: _this2.handleCheck, allChecked: _this2.state.checked });
+        return _react2.default.createElement(_dot2.default, { key: index, checkedElement: elem, number: index, onCheck: _this2.handleCheck, allChecked: _this2.state.checked, send: _this2.props.send, round: rounds });
       });
       return _react2.default.createElement(
         'div',
@@ -9875,8 +9873,9 @@ var Dot = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).call(this, props));
 
         _this.handleChecks = function () {
+
             if (typeof _this.props.onCheck === 'function') {
-                console.log(_this.props.number);
+                _this.props.send(_this.state.allChecked);
                 _this.props.onCheck(_this.props.number);
                 _this.setState({
                     checkedDot: _this.props.allChecked[_this.props.number]
@@ -10476,7 +10475,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  var socket = io.connect("http://localhost:4000");
+  // var socket = io.connect("http://localhost:4000", function(socket){
+  //   socket.join('game');
+  //   socket.on('round', function(msg){
+  //     console.log(msg)
+  //   })
+  // });
+  // socket.emit('player', 'player1');  
+
+  var newMsg = null;
 
   var App = function (_React$Component) {
     _inherits(App, _React$Component);
@@ -10484,16 +10491,35 @@ document.addEventListener('DOMContentLoaded', function () {
     function App(props) {
       _classCallCheck(this, App);
 
-      return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+      var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+      _this.sendMsg = function (msg) {
+        _this.socket.emit('player', msg);
+      };
+
+      _this.io = _this.props.io;
+      return _this;
     }
 
     _createClass(App, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        this.socket = this.io("http://localhost:4000");
+        this.socket.on('connection', function () {
+          this.socket.join('game');
+        });
+        this.socket.on('player', function (msg) {
+          console.log('==============');
+          console.log(msg);
+        });
+      }
+    }, {
       key: 'render',
       value: function render() {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_board2.default, null)
+          _react2.default.createElement(_board2.default, { send: this.sendMsg })
         );
       }
     }]);
@@ -10501,7 +10527,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return App;
   }(_react2.default.Component);
 
-  _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('app'));
+  _reactDom2.default.render(_react2.default.createElement(App, { io: io }), document.getElementById('app'));
 });
 
 /***/ }),
@@ -23030,7 +23056,7 @@ var Board = function (_React$Component) {
         null,
         _react2.default.createElement(
           _row2.default,
-          { layout: this.state.layout },
+          { layout: this.state.layout, send: this.props.send },
           this.props.children
         )
       );
@@ -23092,8 +23118,7 @@ var SvgComponent = function (_React$Component) {
 			diceLayout = this.props.dice.map(function (elem) {
 				return elem == 1 ? color : "none";
 			});
-			console.log(diceLayout);
-			if (this.props.round >= 24) {
+			if (this.props.round >= 23) {
 				return _react2.default.createElement(
 					'center',
 					null,
@@ -23151,12 +23176,12 @@ exports.default = SvgComponent;
 /***/ (function(module, exports) {
 
 module.exports = {
-    1: [24, 1, 3, 7, 9, 13, 17, 16, 12, 11, 6, 21, 10, 5, 8, 14, 20, 18, 2, 22, 15, 4, 19, 23],
-    2: [6, 13, 2, 11, 9, 22, 4, 7, 21, 24, 18, 15, 3, 23, 1, 10, 17, 12, 14, 8, 19, 16, 20, 5],
-    3: [4, 15, 5, 11, 21, 1, 20, 24, 19, 2, 9, 17, 18, 13, 14, 6, 23, 16, 7, 8, 22, 10, 12, 3],
-    4: [16, 1, 20, 11, 15, 5, 4, 22, 2, 13, 8, 17, 9, 24, 6, 14, 18, 7, 10, 19, 3, 21, 23, 12],
-    5: [22, 1, 19, 21, 7, 6, 2, 24, 23, 20, 5, 10, 15, 3, 9, 16, 14, 8, 17, 12, 11, 18, 13, 4],
-    6: [10, 1, 16, 4, 19, 9, 14, 6, 7, 15, 20, 13, 8, 5, 17, 24, 23, 21, 11, 2, 12, 18, 22, 3]
+    ord1: [24, 1, 3, 7, 9, 13, 17, 16, 12, 11, 6, 21, 10, 5, 8, 14, 20, 18, 2, 22, 15, 4, 19, 23],
+    ord2: [0, 13, 2, 11, 9, 22, 4, 7, 21, 6, 18, 15, 3, 23, 1, 10, 17, 12, 14, 8, 19, 16, 20, 5],
+    ord3: [4, 15, 5, 11, 21, 1, 20, 24, 19, 2, 9, 17, 18, 13, 14, 6, 23, 16, 7, 8, 22, 10, 12, 3],
+    ord4: [16, 1, 20, 11, 15, 5, 4, 22, 2, 13, 8, 17, 9, 24, 6, 14, 18, 7, 10, 19, 3, 21, 23, 12],
+    ord5: [22, 1, 19, 21, 7, 6, 2, 24, 23, 20, 5, 10, 15, 3, 9, 16, 14, 8, 17, 12, 11, 18, 13, 4],
+    ord6: [10, 1, 16, 4, 19, 9, 14, 6, 7, 15, 20, 13, 8, 5, 17, 24, 23, 21, 11, 2, 12, 18, 22, 3]
 }
 
 /***/ }),

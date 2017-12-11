@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 // import data from "./data/data.jsx";
 import Board from './components/board.jsx'
 import Row from './components/row.jsx'
+import io from 'socket.io-client';
 
 
 
@@ -14,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function(){
   //   })
   // });
 // socket.emit('player', 'player1');  
+
+var newMsg = null;
 
 class App extends React.Component{
   constructor(props){
@@ -27,15 +30,16 @@ class App extends React.Component{
     })
     this.socket.on('player', function(msg){
       console.log('==============');
-      console.log(msg)
+      console.log(msg);
     })
   }
   sendMsg = (msg)=>{
-    this.socket.emit('player', msg)
-  }
+    this.socket.emit('player', msg);
+   }
+ 
   render(){
     return <div>
-          <Board send={this.sendMsg}/>
+          <Board send={this.sendMsg}  />
           </div>
   }
 }
