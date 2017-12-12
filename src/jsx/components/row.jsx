@@ -1,7 +1,7 @@
 import React from 'react';
 import Dot from './dot.jsx';
 import data from '../data/data.jsx';
-import Dice from './dice.jsx';
+// import Dice from './dice.jsx';
 import CleanDice from '../data/cleanDice.jsx';
 import orders from '../data/order.js';
 import io from 'socket.io-client';
@@ -82,16 +82,18 @@ export default class Row extends React.Component{
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
-          this.setState({dice: diceArray[orders.ord2[this.state.que]], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player),rounds: this.state.que, player: (this.state.que+1)%2}); 
+          this.setState({dice: diceArray[orders.ord2[this.state.que]], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player),que: this.state.que+1, player: (this.state.que%2+1)}); 
         }else{
-          this.setState({dice: diceArray[orders.ord2[this.state.que]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), rounds: this.state.que, player: (this.state.que+1)%2}); 
+          this.setState({dice: diceArray[orders.ord2[this.state.que]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), que: this.state.que+1, player: (this.state.que%2 +1)}); 
         }
-         rounds++;
+        ++rounds
+         ;
          let message =JSON.stringify({
           body: this.state.checked,
-          que: rounds,
+          que: this.state.que+1,
           counter1: (this.state.player==1)? this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player) : this.state.counter1,
-          counter2: (this.state.player != 1)? this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player) : this.state.counter2
+          counter2: (this.state.player != 1)? this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player) : this.state.counter2,
+          player: (this.state.que%2+1)
          })
           
         
@@ -102,10 +104,10 @@ export default class Row extends React.Component{
          
       }
     componentDidMount(){
-      console.log(this.state.que)
       this.socket = io('/');
       this.socket.on('message', message=>{
-          this.setState({checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2})
+        console.log("que " + message.que)
+          this.setState({checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2, player: message.player})
       })
       
     }
@@ -113,18 +115,18 @@ export default class Row extends React.Component{
         let winner = (this.state.counter1 > this.state.counter2)? "1" : "2";
         
         let checkedLayout = this.state.checked;
-        let round = (this.state.player==0)? "2":"1";
+        let round = (this.state.player==1)? "2":"1";
         let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}  round={rounds} />})
       return <div>
         <center>
-        <h2 className="round">player {round} <span>  </span>   round {this.state.que} room {this.props.room}</h2>
+        <h2 className="round">player {this.state.player} <span>  </span>   round {this.state.que} room {this.props.room}</h2>
         </center>
         <div className="wrapper">
         {dots}       
         </div>
         <div className="bottom wrapper">
         <div id="player1">player1 <br/> <span className="span"> {this.state.counter1}</span></div>
-        <CleanDice dice={this.state.dice} player={this.state.que%2} round={this.state.que} winner={winner}/>
+        <CleanDice dice={this.state.dice} player={this.state.player} round={this.state.que} winner={winner}/>
         <div id="player2">player2 <br/> <span className="span"> {this.state.counter2}</span></div>
         
          </div>

@@ -32,8 +32,8 @@ io.on('connection', socket =>{
   
   console.log('a user connected  ' + socket.id.slice(12))
   socket.on('message', function(message){
-       socket.broadcast.emit('message', JSON.parse(message)) 
-       
+       io.emit('message', JSON.parse(message)) 
+       //socket.broadcast.emit('message', JSON.parse(message))
     
 })
   socket.on('disconnect', function(){

@@ -11327,10 +11327,6 @@ var _data = __webpack_require__(56);
 
 var _data2 = _interopRequireDefault(_data);
 
-var _dice = __webpack_require__(94);
-
-var _dice2 = _interopRequireDefault(_dice);
-
 var _cleanDice = __webpack_require__(212);
 
 var _cleanDice2 = _interopRequireDefault(_cleanDice);
@@ -11350,6 +11346,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import Dice from './dice.jsx';
+
 
 var checkedDots = _data2.default.mountFuji;
 
@@ -11416,16 +11414,17 @@ var Row = function (_React$Component) {
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
       if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
       } else {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
       }
-      rounds++;
+      ++rounds;
       var message = JSON.stringify({
         body: _this.state.checked,
-        que: rounds,
+        que: _this.state.que + 1,
         counter1: _this.state.player == 1 ? _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter1,
-        counter2: _this.state.player != 1 ? _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter2
+        counter2: _this.state.player != 1 ? _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter2,
+        player: _this.state.que % 2 + 1
       });
 
       _this.socket.emit('message', message);
@@ -11446,10 +11445,10 @@ var Row = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      console.log(this.state.que);
       this.socket = (0, _socket2.default)('/');
       this.socket.on('message', function (message) {
-        _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2 });
+        console.log("que " + message.que);
+        _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2, player: message.player });
       });
     }
   }, {
@@ -11460,7 +11459,7 @@ var Row = function (_React$Component) {
       var winner = this.state.counter1 > this.state.counter2 ? "1" : "2";
 
       var checkedLayout = this.state.checked;
-      var round = this.state.player == 0 ? "2" : "1";
+      var round = this.state.player == 1 ? "2" : "1";
       var dots = checkedLayout.map(function (elem, index) {
         return _react2.default.createElement(_dot2.default, { key: index, checkedElement: elem, number: index, onCheck: _this3.handleCheck, allChecked: _this3.state.checked, round: rounds });
       });
@@ -11474,7 +11473,7 @@ var Row = function (_React$Component) {
             'h2',
             { className: 'round' },
             'player ',
-            round,
+            this.state.player,
             ' ',
             _react2.default.createElement(
               'span',
@@ -11508,7 +11507,7 @@ var Row = function (_React$Component) {
               this.state.counter1
             )
           ),
-          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.que % 2, round: this.state.que, winner: winner }),
+          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player, round: this.state.que, winner: winner }),
           _react2.default.createElement(
             'div',
             { id: 'player2' },
@@ -26503,6 +26502,10 @@ var _data = __webpack_require__(56);
 
 var _data2 = _interopRequireDefault(_data);
 
+var _order = __webpack_require__(213);
+
+var _order2 = _interopRequireDefault(_order);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26514,25 +26517,46 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var colorPlayer1 = "#A0F";
 var colorPlayer2 = "#FA0";
 
+
+var diceArray = [_data2.default.dice1, _data2.default.dice2, _data2.default.dice3, _data2.default.dice4, _data2.default.dice5, _data2.default.dice6, _data2.default.dice7, _data2.default.dice8, _data2.default.dice9, _data2.default.dice10, _data2.default.dice11, _data2.default.dice12, _data2.default.dice13, _data2.default.dice14, _data2.default.dice15, _data2.default.dice16, _data2.default.dice17, _data2.default.dice18, _data2.default.dice19, _data2.default.dice20, _data2.default.dice21, _data2.default.dice22, _data2.default.dice23, _data2.default.dice24];
+
 var SvgComponent = function (_React$Component) {
 	_inherits(SvgComponent, _React$Component);
 
 	function SvgComponent(props) {
 		_classCallCheck(this, SvgComponent);
 
-		return _possibleConstructorReturn(this, (SvgComponent.__proto__ || Object.getPrototypeOf(SvgComponent)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (SvgComponent.__proto__ || Object.getPrototypeOf(SvgComponent)).call(this, props));
+
+		_this.state = {
+			queue: 1,
+			plyr: 1,
+			dice: diceArray[0]
+		};
+		return _this;
 	}
 
 	_createClass(SvgComponent, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var _this2 = this;
+
+			this.socket = io('/');
+			this.socket.on('message', function (message) {
+				console.log("que" + message.que);
+				_this2.setState({ queue: message.que, plyr: message.player, dice: diceArray[_order2.default.ord2[message.que]] });
+			});
+		}
+	}, {
 		key: 'render',
 		value: function render() {
-			var color = this.props.player === 1 ? colorPlayer1 : colorPlayer2;
-			var color2 = this.props.player === 1 ? colorPlayer2 : colorPlayer1;
-			var diceLayout = [];
-			diceLayout = this.props.dice.map(function (elem) {
+			var color = this.state.plyr === 1 ? colorPlayer1 : colorPlayer2;
+			var color2 = this.state.plyr === 1 ? colorPlayer2 : colorPlayer1;
+			var diceLayout2 = diceArray[_order2.default.ord2[this.state.queue - 1]];
+			var diceLayout = this.state.dice.map(function (elem) {
 				return elem == 1 ? color : "none";
 			});
-			if (this.props.round >= 23) {
+			if (this.state.queue >= 23) {
 				return _react2.default.createElement(
 					'center',
 					null,
