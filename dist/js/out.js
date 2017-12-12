@@ -11415,17 +11415,20 @@ var Row = function (_React$Component) {
 
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
-      if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
+      if (_this.state.que % 2 == 1) {
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: _this.state.que % 2 });
       } else {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: _this.state.que % 2 });
       }
       rounds++;
-      var message = {
+      var message = JSON.stringify({
         body: _this.state.checked,
-        que: rounds + 1 };
+        que: rounds,
+        counter1: _this.state.counter1,
+        counter2: _this.state.counter2
+      });
 
-      _this.socket.emit('message', message.body);
+      _this.socket.emit('message', message);
     };
 
     _this.state = {
@@ -11443,10 +11446,10 @@ var Row = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
+      console.log(this.state.counter1);
       this.socket = (0, _socket2.default)('/');
       this.socket.on('message', function (message) {
-        console.log(message.que);
-        _this2.setState({ checked: message.body, que: message.que, player: message.que });
+        _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2 });
       });
     }
   }, {
@@ -11504,7 +11507,7 @@ var Row = function (_React$Component) {
               this.state.counter1
             )
           ),
-          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player, round: this.state.que, winner: winner }),
+          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.que % 2, round: this.state.que, winner: winner }),
           _react2.default.createElement(
             'div',
             { id: 'player2' },

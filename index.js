@@ -27,16 +27,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 //       console.log('user disconnected');
 //     });
 // });
+
 io.on('connection', socket =>{
-  let round = 1
+  
   console.log('a user connected  ' + socket.id.slice(12))
-  socket.on('message', (body, time, que)=>{
-    console.log('działa?')
-    socket.broadcast.emit('message', {
-        body,
-        que: ++round,
-        time: new Date().toLocaleTimeString()
-    })
+  socket.on('message', function(message){
+       socket.broadcast.emit('message', JSON.parse(message)) //Apparently socket.io have to have JSON format objects...
+       
+    
 })
   socket.on('disconnect', function(){
           console.log('user disconnected');
