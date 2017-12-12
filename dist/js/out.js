@@ -11415,17 +11415,17 @@ var Row = function (_React$Component) {
 
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
-      if (_this.state.que % 2 == 1) {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: _this.state.que % 2 });
+      if (_this.state.player == 1) {
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
       } else {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: _this.state.que % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
       }
       rounds++;
       var message = JSON.stringify({
         body: _this.state.checked,
         que: rounds,
-        counter1: _this.state.counter1,
-        counter2: _this.state.counter2
+        counter1: _this.state.player == 1 ? _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter1,
+        counter2: _this.state.player != 1 ? _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter2
       });
 
       _this.socket.emit('message', message);
@@ -11446,7 +11446,7 @@ var Row = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      console.log(this.state.counter1);
+      console.log(this.state.que);
       this.socket = (0, _socket2.default)('/');
       this.socket.on('message', function (message) {
         _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2 });
@@ -11483,7 +11483,8 @@ var Row = function (_React$Component) {
             ),
             '   round ',
             this.state.que,
-            ' '
+            ' room ',
+            this.props.room
           )
         ),
         _react2.default.createElement(
@@ -13883,30 +13884,62 @@ document.addEventListener('DOMContentLoaded', function () {
     function App(props) {
       _classCallCheck(this, App);
 
-      return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+      var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+      _this.handleChange = function (e) {
+        var roomNumber = e.target.value;
+        _this.setState({
+          room: roomNumber
+
+        });
+      };
+
+      _this.handleSubmit = function (e) {
+        e.preventDefault;
+        _this.setState({
+          loggedIn: true
+        });
+        _this.socket.emit('room', socket.id);
+      };
+
+      _this.state = {
+        name: "",
+        room: 1,
+        loggedIn: true
+      };
+      return _this;
     }
-    // componentDidMount(){
-    //   this.socket = this.io("http://localhost:4000");
-    //   this.socket.on('connection', function(){
-    //     this.socket.join('game')
-    //   })
-    //   this.socket.on('player', function(msg){
-    //     console.log('==============');
-    //     console.log(msg);
-    //   })
-    // }
-    // sendMsg = (msg)=>{
-    //   this.socket.emit('player', msg);
-    //  }
 
     _createClass(App, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var _this2 = this;
+
+        this.socket = (0, _socket2.default)('/');
+        this.socket.on('room', function (room) {
+          _this2.setState({ room: roomNumber });
+        });
+      }
+    }, {
       key: 'render',
       value: function render() {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(_board2.default, null)
-        );
+        if (this.state.loggedIn) {
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(_board2.default, { room: this.state.room })
+          );
+        } else {
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'form',
+              { onSubmit: this.handleSubmit },
+              _react2.default.createElement('input', { type: 'text', placeholder: 'join or create room', value: this.state.room, onChange: this.handleChange })
+            )
+          );
+        }
       }
     }]);
 
@@ -26437,7 +26470,7 @@ var Board = function (_React$Component) {
         null,
         _react2.default.createElement(
           _row2.default,
-          { checked: this.props.checked },
+          { checked: this.props.checked, room: this.props.room },
           this.props.children
         )
       );

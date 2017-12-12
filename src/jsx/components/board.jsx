@@ -14,7 +14,7 @@ export default class Board extends React.Component{
     }
   render(){
     return <div>
-      <Row  checked={this.props.checked}>
+      <Row  checked={this.props.checked} room={this.props.room}>
         {this.props.children}
       </Row>
       </div>

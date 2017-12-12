@@ -32,7 +32,7 @@ io.on('connection', socket =>{
   
   console.log('a user connected  ' + socket.id.slice(12))
   socket.on('message', function(message){
-       socket.broadcast.emit('message', JSON.parse(message)) //Apparently socket.io have to have JSON format objects...
+       socket.broadcast.emit('message', JSON.parse(message)) 
        
     
 })

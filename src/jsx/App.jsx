@@ -21,31 +21,50 @@ var newMsg = null;
 class App extends React.Component{
   constructor(props){
     super(props);
+    this.state={
+      name: "",
+      room: 1,
+      loggedIn: true
     }
-  // componentDidMount(){
-  //   this.socket = this.io("http://localhost:4000");
-  //   this.socket.on('connection', function(){
-  //     this.socket.join('game')
-  //   })
-  //   this.socket.on('player', function(msg){
-  //     console.log('==============');
-  //     console.log(msg);
-  //   })
-  // }
-  // sendMsg = (msg)=>{
-  //   this.socket.emit('player', msg);
-  //  }
+    }
+
+handleChange = (e)=>{
+  let roomNumber = e.target.value;
+  this.setState({
+    room: roomNumber
+   
+  })
+  
+}
+handleSubmit = (e)=>{
+  e.preventDefault;
+  this.setState({
+    loggedIn: true
+  })
+  this.socket.emit('room', socket.id);
+}
+  componentDidMount(){
+    this.socket = io('/');
+    this.socket.on('room', room => {this.setState({room: roomNumber})})
+  }
   
   render(){
-    return <div>
-          <Board   />
+    if (this.state.loggedIn){
+      return <div>
+      <Board  room={this.state.room} />
+      </div>
+    }else{
+      return <div>
+        <form onSubmit={this.handleSubmit}><input type="text" placeholder="join or create room" value={this.state.room} onChange={this.handleChange}/></form>
           </div>
+    }
+             
   }
 }
 
 
   ReactDOM.render(
-        <App />,
+        <App  />,
         document.getElementById('app')
     );
 });
