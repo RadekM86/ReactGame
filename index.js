@@ -14,14 +14,32 @@ app.use(express.static(__dirname + '/'));
 app.use(webpackDevMiddleware(webpack(webpackConfig)));
 app.use(bodyParser.urlencoded({extended: false}));
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-      });
-    socket.on('checked', (checked)=>{
-        this.socket.broadcast.emit('checked', checked)
+// io.on('connection', socket =>{
+//     console.log('a user connected');
+//       socket.on('message', (checkedDotsNew, round)=>{
+//         console.log('działa?')
+//         socket.broadcast.emit('message', {
+//             checkedDotsNew,
+//             round
+//         })
+//     })
+//     socket.on('disconnect', function(){
+//       console.log('user disconnected');
+//     });
+// });
+io.on('connection', socket =>{
+  console.log('a user connected  ' + socket.id.slice(12))
+  socket.on('message', (body, time, rounds)=>{
+    console.log('działa?')
+    socket.broadcast.emit('message', {
+         body,
+        rounds,
+        time: new Date().toLocaleTimeString()
     })
-  });
+})
+  socket.on('disconnect', function(){
+          console.log('user disconnected');
+        });
+})
   
 server.listen(4000);

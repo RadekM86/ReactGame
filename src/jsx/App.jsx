@@ -21,32 +21,31 @@ var newMsg = null;
 class App extends React.Component{
   constructor(props){
     super(props);
-    this.io = this.props.io;
     }
-  componentDidMount(){
-    this.socket = this.io("http://localhost:4000");
-    this.socket.on('connection', function(){
-      this.socket.join('game')
-    })
-    this.socket.on('player', function(msg){
-      console.log('==============');
-      console.log(msg);
-    })
-  }
-  sendMsg = (msg)=>{
-    this.socket.emit('player', msg);
-   }
- 
+  // componentDidMount(){
+  //   this.socket = this.io("http://localhost:4000");
+  //   this.socket.on('connection', function(){
+  //     this.socket.join('game')
+  //   })
+  //   this.socket.on('player', function(msg){
+  //     console.log('==============');
+  //     console.log(msg);
+  //   })
+  // }
+  // sendMsg = (msg)=>{
+  //   this.socket.emit('player', msg);
+  //  }
+  
   render(){
     return <div>
-          <Board send={this.sendMsg}  />
+          <Board   />
           </div>
   }
 }
 
 
   ReactDOM.render(
-        <App io={io}/>,
+        <App />,
         document.getElementById('app')
     );
 });

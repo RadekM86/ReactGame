@@ -3,7 +3,8 @@ import Dot from './dot.jsx';
 import data from '../data/data.jsx';
 import Dice from './dice.jsx';
 import CleanDice from '../data/cleanDice.jsx';
-import orders from '../data/order.js'
+import orders from '../data/order.js';
+import io from 'socket.io-client';
 
 let checkedDots=data.mountFuji;
 
@@ -77,7 +78,6 @@ export default class Row extends React.Component{
     }
     handleCheck = (number) => {
         
-        console.log(this.state.checked[number])
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
@@ -85,15 +85,26 @@ export default class Row extends React.Component{
         }else{
           this.setState({dice: diceArray[orders.ord2[rounds]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
         }
-         rounds++
+         rounds++;
+         let message ={
+          body: this.state.checked,
+          rounds: (this.state.player==0)? "2":"1"
+         }
+         this.socket.emit('message', message.body)
       }
-      
+    componentDidMount(){
+      this.socket = io('/');
+      this.socket.on('message', message=>{
+        console.log(message.body)
+         this.setState({checked: message.body})
+      })
+    }
     render(){
         let winner = (this.state.counter1 > this.state.counter2)? "1" : "2";
         console.log(this.state.checked);
         let checkedLayout = this.state.checked;
         let round = (this.state.player==0)? "2":"1";
-        let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked} send={this.props.send} round={rounds} />})
+        let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}  round={rounds} />})
       return <div>
         <center>
         <h2 className="round">player {round} <span>  </span>   round {rounds} </h2>

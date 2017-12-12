@@ -11,7 +11,6 @@ export default class Dot extends React.Component{
     handleChecks = ()=>{
                     
         if (typeof this.props.onCheck === 'function') {
-            this.props.send(this.state.allChecked)
             this.props.onCheck(this.props.number);
             this.setState({
                 checkedDot: this.props.allChecked[this.props.number],
