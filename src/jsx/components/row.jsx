@@ -74,47 +74,51 @@ export default class Row extends React.Component{
           counter1: 0,
           counter2: 0,
           player: 1,
-          dice: diceArray[0]  }
+          dice: diceArray[0],
+          que: rounds }
     }
     handleCheck = (number) => {
         
         let checkedDotsNew = this.state.checked;
         diceHandler(checkedDotsNew,number,this.state.dice);
         if (this.state.player == 1){
-          this.setState({dice: diceArray[orders.ord2[rounds]], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[orders.ord2[this.state.que]], checked: checkedDotsNew, counter1: this.state.counter1 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player),rounds: this.state.que, player: (this.state.que+1)%2});
         }else{
-          this.setState({dice: diceArray[orders.ord2[rounds]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), player: (this.state.player+1)%2});
+          this.setState({dice: diceArray[orders.ord2[this.state.que]],checked: checkedDotsNew, counter2: this.state.counter2 + pointsHandler(checkedDotsNew, number, this.state.dice, this.state.player), rounds: this.state.que, player: (this.state.que+1)%2});
         }
          rounds++;
          let message ={
           body: this.state.checked,
-          rounds: (this.state.player==0)? "2":"1"
-         }
-         this.socket.emit('message', message.body)
+          que: rounds+1         };
+         
+         this.socket.emit('message', message.body);
+         
+         
       }
     componentDidMount(){
       this.socket = io('/');
       this.socket.on('message', message=>{
-        console.log(message.body)
-         this.setState({checked: message.body})
+        console.log(message.que)
+         this.setState({checked: message.body, que: message.que, player: message.que})
       })
+      
     }
     render(){
         let winner = (this.state.counter1 > this.state.counter2)? "1" : "2";
-        console.log(this.state.checked);
+        
         let checkedLayout = this.state.checked;
         let round = (this.state.player==0)? "2":"1";
         let dots = checkedLayout.map((elem,index)=>{return <Dot  key={index} checkedElement={elem} number={index} onCheck={this.handleCheck} allChecked={this.state.checked}  round={rounds} />})
       return <div>
         <center>
-        <h2 className="round">player {round} <span>  </span>   round {rounds} </h2>
+        <h2 className="round">player {round} <span>  </span>   round {this.state.que} </h2>
         </center>
         <div className="wrapper">
         {dots}       
         </div>
         <div className="bottom wrapper">
         <div id="player1">player1 <br/> <span className="span"> {this.state.counter1}</span></div>
-        <CleanDice dice={this.state.dice} player={this.state.player} round={rounds} winner={winner}/>
+        <CleanDice dice={this.state.dice} player={this.state.player} round={this.state.que} winner={winner}/>
         <div id="player2">player2 <br/> <span className="span"> {this.state.counter2}</span></div>
          </div>
       </div>

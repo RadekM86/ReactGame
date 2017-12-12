@@ -11416,15 +11416,15 @@ var Row = function (_React$Component) {
       var checkedDotsNew = _this.state.checked;
       diceHandler(checkedDotsNew, number, _this.state.dice);
       if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[_order2.default.ord2[rounds]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
       } else {
-        _this.setState({ dice: diceArray[_order2.default.ord2[rounds]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), player: (_this.state.player + 1) % 2 });
+        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), rounds: _this.state.que, player: (_this.state.que + 1) % 2 });
       }
       rounds++;
       var message = {
         body: _this.state.checked,
-        rounds: _this.state.player == 0 ? "2" : "1"
-      };
+        que: rounds + 1 };
+
       _this.socket.emit('message', message.body);
     };
 
@@ -11433,7 +11433,8 @@ var Row = function (_React$Component) {
       counter1: 0,
       counter2: 0,
       player: 1,
-      dice: diceArray[0] };
+      dice: diceArray[0],
+      que: rounds };
     return _this;
   }
 
@@ -11444,8 +11445,8 @@ var Row = function (_React$Component) {
 
       this.socket = (0, _socket2.default)('/');
       this.socket.on('message', function (message) {
-        console.log(message.body);
-        _this2.setState({ checked: message.body });
+        console.log(message.que);
+        _this2.setState({ checked: message.body, que: message.que, player: message.que });
       });
     }
   }, {
@@ -11454,7 +11455,7 @@ var Row = function (_React$Component) {
       var _this3 = this;
 
       var winner = this.state.counter1 > this.state.counter2 ? "1" : "2";
-      console.log(this.state.checked);
+
       var checkedLayout = this.state.checked;
       var round = this.state.player == 0 ? "2" : "1";
       var dots = checkedLayout.map(function (elem, index) {
@@ -11478,7 +11479,7 @@ var Row = function (_React$Component) {
               '  '
             ),
             '   round ',
-            rounds,
+            this.state.que,
             ' '
           )
         ),
@@ -11503,7 +11504,7 @@ var Row = function (_React$Component) {
               this.state.counter1
             )
           ),
-          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player, round: rounds, winner: winner }),
+          _react2.default.createElement(_cleanDice2.default, { dice: this.state.dice, player: this.state.player, round: this.state.que, winner: winner }),
           _react2.default.createElement(
             'div',
             { id: 'player2' },

@@ -28,12 +28,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 //     });
 // });
 io.on('connection', socket =>{
+  let round = 1
   console.log('a user connected  ' + socket.id.slice(12))
-  socket.on('message', (body, time, rounds)=>{
+  socket.on('message', (body, time, que)=>{
     console.log('działa?')
     socket.broadcast.emit('message', {
-         body,
-        rounds,
+        body,
+        que: ++round,
         time: new Date().toLocaleTimeString()
     })
 })
