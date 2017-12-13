@@ -13,7 +13,7 @@ export default class SvgComponent extends React.Component{
 		this.state={
 			queue: 1,
 			plyr: 1,
-			dice: diceArray[0]
+			dice: diceArray[orders.ord5[0]]
 		}
 	}
 	componentDidMount(){
@@ -21,15 +21,15 @@ export default class SvgComponent extends React.Component{
 		this.socket = io('/');
 		this.socket.on('message', message=>{
 			console.log("que" + message.que)
-			this.setState({queue: message.que, plyr: message.player, dice: diceArray[orders.ord2[message.que]]})
+			this.setState({queue: message.que, plyr: message.player, dice: diceArray[orders.ord5[message.que]]})
 		})
 		
 	  }
 	render(){
 		let color = ((this.state.plyr===1)?colorPlayer1:colorPlayer2);
 		let color2 = ((this.state.plyr===1)?colorPlayer2:colorPlayer1)
-		let diceLayout2 = diceArray[orders.ord2[this.state.queue-1]]
-		let diceLayout = this.state.dice.map((elem)=>{return (elem ==1)?color:"none"})
+		let diceLayout2 = diceArray[orders.ord5[this.state.queue - 1]]
+		let diceLayout = diceLayout2.map((elem)=>{return (elem ==1)?color:"none"})
 		if (this.state.queue>=23){
 			return <center><div className="gameOver">Game Over<span> <br/>player {this.props.winner} wins</span></div></center>
 		} return <div className="dice" style={{borderColor: color}}>

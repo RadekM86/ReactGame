@@ -1811,7 +1811,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(215);
+exports = module.exports = __webpack_require__(214);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -3323,15 +3323,15 @@ Emitter.prototype.hasListeners = function(event){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(224);
+var keys = __webpack_require__(223);
 var hasBinary = __webpack_require__(97);
-var sliceBuffer = __webpack_require__(225);
-var after = __webpack_require__(226);
-var utf8 = __webpack_require__(227);
+var sliceBuffer = __webpack_require__(224);
+var after = __webpack_require__(225);
+var utf8 = __webpack_require__(226);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(229);
+  base64encoder = __webpack_require__(228);
 }
 
 /**
@@ -3389,7 +3389,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(230);
+var Blob = __webpack_require__(229);
 
 /**
  * Encodes a packet.
@@ -7583,7 +7583,7 @@ module.exports = {
 var debug = __webpack_require__(14)('socket.io-parser');
 var Emitter = __webpack_require__(23);
 var hasBin = __webpack_require__(97);
-var binary = __webpack_require__(218);
+var binary = __webpack_require__(217);
 var isBuf = __webpack_require__(98);
 
 /**
@@ -7983,7 +7983,7 @@ function error() {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(222);
+var hasCORS = __webpack_require__(221);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -11331,7 +11331,7 @@ var _cleanDice = __webpack_require__(212);
 
 var _cleanDice2 = _interopRequireDefault(_cleanDice);
 
-var _order = __webpack_require__(213);
+var _order = __webpack_require__(94);
 
 var _order2 = _interopRequireDefault(_order);
 
@@ -11412,18 +11412,20 @@ var Row = function (_React$Component) {
     _this.handleCheck = function (number) {
 
       var checkedDotsNew = _this.state.checked;
-      diceHandler(checkedDotsNew, number, _this.state.dice);
-      if (_this.state.player == 1) {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
-      } else {
-        _this.setState({ dice: diceArray[_order2.default.ord2[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
-      }
+      diceHandler(checkedDotsNew, number, diceArray[_order2.default.ord5[_this.state.que - 1]]);
       ++rounds;
+      if (_this.state.player == 1) {
+        _this.setState({ dice: diceArray[_order2.default.ord5[_this.state.que]], checked: checkedDotsNew, counter1: _this.state.counter1 + pointsHandler(checkedDotsNew, number, diceArray[_order2.default.ord5[_this.state.que - 1]], _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
+      } else {
+        _this.setState({ dice: diceArray[_order2.default.ord5[_this.state.que]], checked: checkedDotsNew, counter2: _this.state.counter2 + pointsHandler(checkedDotsNew, number, diceArray[_order2.default.ord5[_this.state.que - 1]], _this.state.player), que: _this.state.que + 1, player: _this.state.que % 2 + 1 });
+      }
+
+      ;
       var message = JSON.stringify({
         body: _this.state.checked,
         que: _this.state.que + 1,
-        counter1: _this.state.player == 1 ? _this.state.counter1 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter1,
-        counter2: _this.state.player != 1 ? _this.state.counter2 + pointsHandler(checkedDotsNew, number, _this.state.dice, _this.state.player) : _this.state.counter2,
+        counter1: _this.state.player == 1 ? _this.state.counter1 + pointsHandler(checkedDotsNew, number, diceArray[_order2.default.ord5[_this.state.que - 1]], _this.state.player) : _this.state.counter1,
+        counter2: _this.state.player != 1 ? _this.state.counter2 + pointsHandler(checkedDotsNew, number, diceArray[_order2.default.ord5[_this.state.que - 1]], _this.state.player) : _this.state.counter2,
         player: _this.state.que % 2 + 1
       });
 
@@ -11446,9 +11448,14 @@ var Row = function (_React$Component) {
       var _this2 = this;
 
       this.socket = (0, _socket2.default)('/');
+      var player = JSON.stringify({
+        player: this.state.player,
+        id: this.socket.id
+      });
+      this.socket.emit('player', player);
       this.socket.on('message', function (message) {
         console.log("que " + message.que);
-        _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2, player: message.player });
+        _this2.setState({ checked: message.body, que: message.que, counter1: message.counter1, counter2: message.counter2, player: message.player, dice: diceArray[message.que - 1] });
       });
     }
   }, {
@@ -11457,7 +11464,7 @@ var Row = function (_React$Component) {
       var _this3 = this;
 
       var winner = this.state.counter1 > this.state.counter2 ? "1" : "2";
-
+      console.log(this.state.que, this.state.player, "1" + this.state.dice);
       var checkedLayout = this.state.checked;
       var round = this.state.player == 1 ? "2" : "1";
       var dots = checkedLayout.map(function (elem, index) {
@@ -11606,53 +11613,16 @@ exports.default = Dot;
 
 /***/ }),
 /* 94 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(18);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Dice = function (_React$Component) {
-    _inherits(Dice, _React$Component);
-
-    function Dice(props) {
-        _classCallCheck(this, Dice);
-
-        return _possibleConstructorReturn(this, (Dice.__proto__ || Object.getPrototypeOf(Dice)).call(this, props));
-    }
-
-    _createClass(Dice, [{
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "select", onClick: this.props.handleSelect },
-                "Left of right?"
-            );
-        }
-    }]);
-
-    return Dice;
-}(_react2.default.Component);
-
-exports.default = Dice;
+module.exports = {
+    ord1: [0, 1, 3, 7, 9, 13, 17, 16, 12, 11, 6, 21, 10, 5, 8, 14, 20, 18, 2, 22, 15, 4, 19, 23],
+    ord2: [0, 13, 2, 11, 9, 22, 4, 7, 21, 6, 18, 15, 3, 23, 1, 10, 17, 12, 14, 8, 19, 16, 20, 5],
+    ord3: [4, 15, 5, 11, 21, 1, 20, 0, 19, 2, 9, 17, 18, 13, 14, 6, 23, 16, 7, 8, 22, 10, 12, 3],
+    ord4: [16, 1, 20, 11, 15, 5, 4, 22, 2, 13, 8, 17, 9, 0, 6, 14, 18, 7, 10, 19, 3, 21, 23, 12],
+    ord5: [22, 1, 19, 21, 7, 6, 2, 0, 23, 20, 5, 10, 15, 3, 9, 16, 14, 8, 17, 12, 11, 18, 13, 4],
+    ord6: [10, 1, 16, 4, 19, 9, 14, 6, 7, 15, 20, 13, 8, 5, 17, 0, 23, 21, 11, 2, 12, 18, 22, 3]
+}
 
 /***/ }),
 /* 95 */
@@ -11663,7 +11633,7 @@ exports.default = Dice;
  * Module dependencies.
  */
 
-var url = __webpack_require__(214);
+var url = __webpack_require__(213);
 var parser = __webpack_require__(57);
 var Manager = __webpack_require__(99);
 var debug = __webpack_require__(14)('socket.io-client');
@@ -11809,7 +11779,7 @@ module.exports = function parseuri(str) {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(217);
+var isArray = __webpack_require__(216);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
@@ -11897,7 +11867,7 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(220);
+var eio = __webpack_require__(219);
 var Socket = __webpack_require__(104);
 var Emitter = __webpack_require__(23);
 var parser = __webpack_require__(57);
@@ -11905,7 +11875,7 @@ var on = __webpack_require__(105);
 var bind = __webpack_require__(106);
 var debug = __webpack_require__(14)('socket.io-client:manager');
 var indexOf = __webpack_require__(103);
-var Backoff = __webpack_require__(235);
+var Backoff = __webpack_require__(234);
 
 /**
  * IE6+ hasOwnProperty
@@ -12476,9 +12446,9 @@ Manager.prototype.onreconnect = function () {
  */
 
 var XMLHttpRequest = __webpack_require__(58);
-var XHR = __webpack_require__(223);
-var JSONP = __webpack_require__(231);
-var websocket = __webpack_require__(232);
+var XHR = __webpack_require__(222);
+var JSONP = __webpack_require__(230);
+var websocket = __webpack_require__(231);
 
 /**
  * Export transports.
@@ -12879,7 +12849,7 @@ module.exports = function(arr, obj){
 
 var parser = __webpack_require__(57);
 var Emitter = __webpack_require__(23);
-var toArray = __webpack_require__(234);
+var toArray = __webpack_require__(233);
 var on = __webpack_require__(105);
 var bind = __webpack_require__(106);
 var debug = __webpack_require__(14)('socket.io-client:socket');
@@ -26436,7 +26406,7 @@ var _dot = __webpack_require__(93);
 
 var _dot2 = _interopRequireDefault(_dot);
 
-var _dice = __webpack_require__(94);
+var _dice = __webpack_require__(235);
 
 var _dice2 = _interopRequireDefault(_dice);
 
@@ -26502,7 +26472,7 @@ var _data = __webpack_require__(56);
 
 var _data2 = _interopRequireDefault(_data);
 
-var _order = __webpack_require__(213);
+var _order = __webpack_require__(94);
 
 var _order2 = _interopRequireDefault(_order);
 
@@ -26531,7 +26501,7 @@ var SvgComponent = function (_React$Component) {
 		_this.state = {
 			queue: 1,
 			plyr: 1,
-			dice: diceArray[0]
+			dice: diceArray[_order2.default.ord5[0]]
 		};
 		return _this;
 	}
@@ -26544,7 +26514,7 @@ var SvgComponent = function (_React$Component) {
 			this.socket = io('/');
 			this.socket.on('message', function (message) {
 				console.log("que" + message.que);
-				_this2.setState({ queue: message.que, plyr: message.player, dice: diceArray[_order2.default.ord2[message.que]] });
+				_this2.setState({ queue: message.que, plyr: message.player, dice: diceArray[_order2.default.ord5[message.que]] });
 			});
 		}
 	}, {
@@ -26552,8 +26522,8 @@ var SvgComponent = function (_React$Component) {
 		value: function render() {
 			var color = this.state.plyr === 1 ? colorPlayer1 : colorPlayer2;
 			var color2 = this.state.plyr === 1 ? colorPlayer2 : colorPlayer1;
-			var diceLayout2 = diceArray[_order2.default.ord2[this.state.queue - 1]];
-			var diceLayout = this.state.dice.map(function (elem) {
+			var diceLayout2 = diceArray[_order2.default.ord5[this.state.queue - 1]];
+			var diceLayout = diceLayout2.map(function (elem) {
 				return elem == 1 ? color : "none";
 			});
 			if (this.state.queue >= 23) {
@@ -26611,19 +26581,6 @@ exports.default = SvgComponent;
 
 /***/ }),
 /* 213 */
-/***/ (function(module, exports) {
-
-module.exports = {
-    ord1: [24, 1, 3, 7, 9, 13, 17, 16, 12, 11, 6, 21, 10, 5, 8, 14, 20, 18, 2, 22, 15, 4, 19, 23],
-    ord2: [0, 13, 2, 11, 9, 22, 4, 7, 21, 6, 18, 15, 3, 23, 1, 10, 17, 12, 14, 8, 19, 16, 20, 5],
-    ord3: [4, 15, 5, 11, 21, 1, 20, 24, 19, 2, 9, 17, 18, 13, 14, 6, 23, 16, 7, 8, 22, 10, 12, 3],
-    ord4: [16, 1, 20, 11, 15, 5, 4, 22, 2, 13, 8, 17, 9, 24, 6, 14, 18, 7, 10, 19, 3, 21, 23, 12],
-    ord5: [22, 1, 19, 21, 7, 6, 2, 24, 23, 20, 5, 10, 15, 3, 9, 16, 14, 8, 17, 12, 11, 18, 13, 4],
-    ord6: [10, 1, 16, 4, 19, 9, 14, 6, 7, 15, 20, 13, 8, 5, 17, 24, 23, 21, 11, 2, 12, 18, 22, 3]
-}
-
-/***/ }),
-/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -26705,7 +26662,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 215 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -26721,7 +26678,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(216);
+exports.humanize = __webpack_require__(215);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -26913,7 +26870,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 216 */
+/* 215 */
 /***/ (function(module, exports) {
 
 /**
@@ -27071,7 +27028,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 217 */
+/* 216 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -27082,7 +27039,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 218 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -27091,7 +27048,7 @@ module.exports = Array.isArray || function (arr) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(219);
+var isArray = __webpack_require__(218);
 var isBuf = __webpack_require__(98);
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
@@ -27230,7 +27187,7 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 219 */
+/* 218 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -27241,11 +27198,11 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 220 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(221);
+module.exports = __webpack_require__(220);
 
 /**
  * Exports parser
@@ -27257,7 +27214,7 @@ module.exports.parser = __webpack_require__(24);
 
 
 /***/ }),
-/* 221 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -28007,7 +27964,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 222 */
+/* 221 */
 /***/ (function(module, exports) {
 
 
@@ -28030,7 +27987,7 @@ try {
 
 
 /***/ }),
-/* 223 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -28450,7 +28407,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 224 */
+/* 223 */
 /***/ (function(module, exports) {
 
 
@@ -28475,7 +28432,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 225 */
+/* 224 */
 /***/ (function(module, exports) {
 
 /**
@@ -28510,7 +28467,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 226 */
+/* 225 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -28544,7 +28501,7 @@ function noop() {}
 
 
 /***/ }),
-/* 227 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -28802,10 +28759,10 @@ function noop() {}
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(228)(module), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(227)(module), __webpack_require__(8)))
 
 /***/ }),
-/* 228 */
+/* 227 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -28833,7 +28790,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 229 */
+/* 228 */
 /***/ (function(module, exports) {
 
 /*
@@ -28906,7 +28863,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 230 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -29009,7 +28966,7 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 231 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -29247,7 +29204,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 232 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -29264,7 +29221,7 @@ var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(233);
+    NodeWebSocket = __webpack_require__(232);
   } catch (e) { }
 }
 
@@ -29540,13 +29497,13 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 233 */
+/* 232 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 234 */
+/* 233 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -29565,7 +29522,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 235 */
+/* 234 */
 /***/ (function(module, exports) {
 
 
@@ -29654,6 +29611,56 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
+
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(18);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Dice = function (_React$Component) {
+    _inherits(Dice, _React$Component);
+
+    function Dice(props) {
+        _classCallCheck(this, Dice);
+
+        return _possibleConstructorReturn(this, (Dice.__proto__ || Object.getPrototypeOf(Dice)).call(this, props));
+    }
+
+    _createClass(Dice, [{
+        key: "render",
+        value: function render() {
+            return _react2.default.createElement(
+                "div",
+                { className: "select", onClick: this.props.handleSelect },
+                "Left of right?"
+            );
+        }
+    }]);
+
+    return Dice;
+}(_react2.default.Component);
+
+exports.default = Dice;
 
 /***/ }),
 /* 236 */
